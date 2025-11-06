@@ -1,0 +1,49 @@
+/* Center the card */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+  font-family: 'Arial', sans-serif;
+}
+
+/* Card design */
+.card {
+  background-color: white;
+  padding: 40px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Heading style */
+.card h1 {
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: #333;
+}
+
+/* Paragraph style */
+.card p {
+  margin-bottom: 30px;
+  font-size: 18px;
+  color: #555;
+}
+
+/* Button style */
+.card button {
+  padding: 12px 30px;
+  font-size: 18px;
+  color: white;
+  background-color: #ff6b6b;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.card button:hover {
+  background-color: #ff4c4c;
+  transform: scale(1.05);
+}

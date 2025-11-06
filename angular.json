@@ -3,5 +3,191 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
+    "myapp": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/myapp",
+      "sourceRoot": "projects/myapp/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/myapp",
+            "index": "projects/myapp/src/index.html",
+            "main": "projects/myapp/src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "projects/myapp/tsconfig.app.json",
+            "assets": [
+              "projects/myapp/src/favicon.ico",
+              "projects/myapp/src/assets"
+            ],
+            "styles": [
+              "projects/myapp/src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "myapp:build:production"
+            },
+            "development": {
+              "browserTarget": "myapp:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "myapp:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "projects/myapp/tsconfig.spec.json",
+            "assets": [
+              "projects/myapp/src/favicon.ico",
+              "projects/myapp/src/assets"
+            ],
+            "styles": [
+              "projects/myapp/src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    },
+    "telegrammsg": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/telegrammsg",
+      "sourceRoot": "projects/telegrammsg/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/telegrammsg",
+            "index": "projects/telegrammsg/src/index.html",
+            "main": "projects/telegrammsg/src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "projects/telegrammsg/tsconfig.app.json",
+            "assets": [
+              "projects/telegrammsg/src/favicon.ico",
+              "projects/telegrammsg/src/assets",
+              "projects/telegrammsg/src/firebase-messaging-sw.js"
+            ],
+            "styles": [
+              "projects/telegrammsg/src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "telegrammsg:build:production"
+            },
+            "development": {
+              "browserTarget": "telegrammsg:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "telegrammsg:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "projects/telegrammsg/tsconfig.spec.json",
+            "assets": [
+              "projects/telegrammsg/src/favicon.ico",
+              "projects/telegrammsg/src/assets"
+            ],
+            "styles": [
+              "projects/telegrammsg/src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "analytics": false
   }
 }
