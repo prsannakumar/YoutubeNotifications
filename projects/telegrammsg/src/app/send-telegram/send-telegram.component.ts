@@ -42,9 +42,11 @@ export class SendTelegramComponent {
           body: JSON.stringify({ fcmToken: token })
         });
         console.log("📤 FCM token sent to Worker!");
+        alert("you are registered successfully");
 
       } catch (err) {
         console.error('❌ Error getting token or sending to Worker:', err);
+        alert("you are not registered");
       }
     } else {
       console.log('🚫 Permission not granted for Notification');
