@@ -5,49 +5,44 @@ permissions:
 on:
   push:
     branches:
-      - main  # or 'master' if your default branch is master
+      - main  # change to master if your default branch is master
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repo
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # 3️⃣ Install dependencies with legacy peer deps
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      # 4️⃣ Create assets folder & inject Firebase secrets
       - name: Inject Firebase secrets
         run: |
+          echo "Creating assets folder if it doesn't exist..."
           mkdir -p ./projects/telegrammsg/src/assets
-          echo "window.env = {
-            firebaseConfig: {
-              apiKey: '${{ secrets.NG_APP_FIREBASE_API_KEY }}',
-              authDomain: '${{ secrets.NG_APP_FIREBASE_AUTH_DOMAIN }}',
-              projectId: '${{ secrets.NG_APP_FIREBASE_PROJECT_ID }}',
-              storageBucket: '${{ secrets.NG_APP_FIREBASE_STORAGE_BUCKET }}',
-              messagingSenderId: '${{ secrets.NG_APP_FIREBASE_SENDER_ID }}',
-              appId: '${{ secrets.NG_APP_FIREBASE_APP_ID }}',
-              measurementId: '${{ secrets.NG_APP_FIREBASE_MEASUREMENT_ID }}',
-              vapidKey: '${{ secrets.NG_APP_FIREBASE_VAPID_KEY }}'
-            }
-          }" > ./projects/telegrammsg/src/assets/env.js
+          echo "Writing env.js with Firebase config..."
+          echo "window.env = { firebaseConfig: { \
+            apiKey: '${{ secrets.NG_APP_FIREBASE_API_KEY }}', \
+            authDomain: '${{ secrets.NG_APP_FIREBASE_AUTH_DOMAIN }}', \
+            projectId: '${{ secrets.NG_APP_FIREBASE_PROJECT_ID }}', \
+            storageBucket: '${{ secrets.NG_APP_FIREBASE_STORAGE_BUCKET }}', \
+            messagingSenderId: '${{ secrets.NG_APP_FIREBASE_SENDER_ID }}', \
+            appId: '${{ secrets.NG_APP_FIREBASE_APP_ID }}', \
+            measurementId: '${{ secrets.NG_APP_FIREBASE_MEASUREMENT_ID }}', \
+            vapidKey: '${{ secrets.NG_APP_FIREBASE_VAPID_KEY }}' \
+          } };" > ./projects/telegrammsg/src/assets/env.js
+          echo "✅ env.js created at ./projects/telegrammsg/src/assets/env.js"
 
-      # 5️⃣ Build Angular app with npx and base href
       - name: Build Angular app
         run: npx ng build telegrammsg --configuration production --base-href /YoutubeNotifications/
 
-      # 6️⃣ Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
