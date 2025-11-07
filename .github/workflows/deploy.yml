@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repo
+      # 1️⃣ Checkout repository
       - uses: actions/checkout@v3
 
       # 2️⃣ Setup Node.js
@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 16
 
-      # 3️⃣ Install dependencies
+      # 3️⃣ Install dependencies (including @angular/cli locally)
       - name: Install dependencies
         run: npm install
 
@@ -37,11 +37,11 @@ jobs:
             }
           };" > projects/telegrammsg/src/assets/env.js
 
-      # 5️⃣ Build only the telegrammsg project
+      # 5️⃣ Build only the telegrammsg project using npx
       - name: Build Telegrammsg Angular App
-        run: ng build telegrammsg --configuration production
+        run: npx ng build telegrammsg --configuration production
 
-      # 6️⃣ Optional: Deploy to GitHub Pages (if needed)
+      # 6️⃣ Optional: Deploy to GitHub Pages
       # - name: Deploy to GitHub Pages
       #   uses: peaceiris/actions-gh-pages@v3
       #   with:
