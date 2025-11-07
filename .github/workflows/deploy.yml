@@ -1,16 +1,16 @@
-name: Deploy Angular to GitHub Pages
+name: Deploy Angular Multi-Project to GitHub Pages
 
 on:
   push:
     branches:
-      - main   # Trigger workflow on push to main
+      - main  # Trigger on main branch
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository
+      # 1️⃣ Checkout the repository
       - name: Checkout repo
         uses: actions/checkout@v3
 
@@ -24,8 +24,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 4️⃣ Inject Firebase secrets into .env for Angular build
-      - name: Inject Firebase environment variables
+      # 4️⃣ Inject Firebase environment variables into .env
+      - name: Inject Firebase secrets
         run: |
           echo "NG_APP_FIREBASE_API_KEY=${{ secrets.NG_APP_FIREBASE_API_KEY }}" >> .env
           echo "NG_APP_FIREBASE_AUTH_DOMAIN=${{ secrets.NG_APP_FIREBASE_AUTH_DOMAIN }}" >> .env
@@ -36,13 +36,13 @@ jobs:
           echo "NG_APP_FIREBASE_MEASUREMENT_ID=${{ secrets.NG_APP_FIREBASE_MEASUREMENT_ID }}" >> .env
           echo "NG_APP_FIREBASE_VAPID_KEY=${{ secrets.NG_APP_FIREBASE_VAPID_KEY }}" >> .env
 
-      # 5️⃣ Build Angular project (production)
+      # 5️⃣ Build the Angular project (telegrammsg) with correct base href
       - name: Build Angular project
-        run: npx ng build telegrammsg --configuration production
+        run: npx ng build telegrammsg --configuration production --base-href /YoutubeNotifications/
 
       # 6️⃣ Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist   # Replace with actual Angular dist folder if different
+          publish_dir: ./dist/telegrammsg
