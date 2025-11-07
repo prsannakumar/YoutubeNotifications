@@ -8,7 +8,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
-import { environment } from '../environment';
+import { environment } from '../environments/environment';
+
 
 
 @NgModule({
