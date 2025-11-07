@@ -1,4 +1,4 @@
-name: Build & Deploy Angular App
+name: Build & Deploy Telegrammsg Angular App
 
 on:
   push:
@@ -7,20 +7,25 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
+      # 1️⃣ Checkout repo
       - uses: actions/checkout@v3
 
+      # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16
 
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: npm install
 
-      - name: Create Firebase env.js from secrets
+      # 4️⃣ Create Firebase env.js from GitHub Secrets
+      - name: Create Firebase env.js
         run: |
-          mkdir -p src/assets
+          mkdir -p projects/telegrammsg/src/assets
           echo "window.env = {
             firebase: {
               apiKey: '${{ secrets.FIREBASE_API_KEY }}',
@@ -30,14 +35,15 @@ jobs:
               messagingSenderId: '${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}',
               appId: '${{ secrets.FIREBASE_APP_ID }}'
             }
-          };" > src/assets/env.js
+          };" > projects/telegrammsg/src/assets/env.js
 
-      - name: Build Angular App
-        run: npm run build --prod
+      # 5️⃣ Build only the telegrammsg project
+      - name: Build Telegrammsg Angular App
+        run: ng build telegrammsg --configuration production
 
-      # Example deploy step (GitHub Pages)
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/YoutubeNotifications
+      # 6️⃣ Optional: Deploy to GitHub Pages (if needed)
+      # - name: Deploy to GitHub Pages
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: ./dist/telegrammsg
