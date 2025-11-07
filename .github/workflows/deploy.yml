@@ -43,7 +43,8 @@ jobs:
 
     # 5️⃣ Build Angular app for production
     - name: Build Angular app
-      run: npm run build -- --configuration production --output-path=dist/telegrammsg --base-href /YoutubeNotifications/
+      run: ng build telegrammsg --configuration production --output-path=dist/telegrammsg --base-href /YoutubeNotifications/
+
 
     # 6️⃣ Deploy to GitHub Pages
     - name: Deploy to GitHub Pages
