@@ -22,11 +22,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Create Firebase env.js from GitHub Secrets (EOF method)
+      # 4️⃣ Create Firebase env.js from GitHub Secrets
       - name: Create Firebase env.js
         run: |
           mkdir -p projects/telegrammsg/src/assets
-          cat <<EOF > projects/telegrammsg/src/assets/env.js
+          cat <<'EOF' > projects/telegrammsg/src/assets/env.js
 window.env = {
   firebase: {
     apiKey: '${{ secrets.FIREBASE_API_KEY }}',
