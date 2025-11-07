@@ -7,10 +7,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_RUNNER_DEBUG: true      # verbose runner logs
+      ACTIONS_STEP_DEBUG: true        # verbose step logs
 
     steps:
-      # 1️⃣ Checkout repository
-      - name: Checkout code
+      # 1️⃣ Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       # 2️⃣ Setup Node.js
@@ -21,21 +24,52 @@ jobs:
 
       # 3️⃣ Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: |
+          echo "📦 Installing npm dependencies..."
+          npm install
 
-      # 4️⃣ Create env.js using Node.js script
+      # 4️⃣ Debug: list repo root files
+      - name: List root folder
+        run: |
+          echo "📁 Listing root folder:"
+          ls -R
+
+      # 5️⃣ Debug: list projects folder
+      - name: List projects folder
+        run: |
+          echo "📁 Listing projects folder:"
+          ls -R projects/
+
+      # 6️⃣ Create env.js using Node.js script
       - name: Create env.js
-        run: node scripts/create-env.js
+        run: |
+          echo "📝 Running Node.js script to create env.js"
+          node scripts/create-env.js
 
-      # 5️⃣ Verify env.js was created
+      # 7️⃣ Debug: verify env.js creation
       - name: Verify env.js
-        run: cat projects/telegrammsg/src/assets/env.js || echo "❌ env.js not found"
+        run: |
+          echo "🔍 Checking if env.js exists..."
+          if [ -f projects/telegrammsg/src/assets/env.js ]; then
+            echo "✅ env.js exists, contents below:"
+            cat projects/telegrammsg/src/assets/env.js
+          else
+            echo "❌ env.js not found"
+          fi
 
-      # 6️⃣ Build telegrammsg project
+      # 8️⃣ Debug: list assets folder
+      - name: List assets folder
+        run: |
+          echo "📁 Listing assets folder contents:"
+          ls -l projects/telegrammsg/src/assets/
+
+      # 9️⃣ Build telegrammsg project
       - name: Build Telegrammsg Angular App
-        run: npx ng build telegrammsg --configuration production
+        run: |
+          echo "🏗 Building Angular project 'telegrammsg'..."
+          npx ng build telegrammsg --configuration production
 
-      # 7️⃣ Optional: Deploy
+      # 🔟 Optional: Deploy to GitHub Pages
       # - name: Deploy to GitHub Pages
       #   uses: peaceiris/actions-gh-pages@v3
       #   with:
