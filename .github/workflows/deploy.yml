@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,11 +18,11 @@ jobs:
         with:
           node-version: 16
 
-      # 3️⃣ Install npm dependencies
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Generate env.js from GitHub secrets
+      # 4️⃣ Create env.js from GitHub secrets
       - name: Create env.js
         run: node scripts/create-env.js
         env:
@@ -35,10 +35,10 @@ jobs:
           NG_APP_FIREBASE_STORAGE_BUCKET: ${{ secrets.NG_APP_FIREBASE_STORAGE_BUCKET }}
           NG_APP_FIREBASE_VAPID_KEY: ${{ secrets.NG_APP_FIREBASE_VAPID_KEY }}
 
-      # 5️⃣ Debug: Verify env.js creation
-      - name: Verify env.js
+      # 5️⃣ Verify env.js created in source folder
+      - name: Verify env.js in src/assets
         run: |
-          echo "📁 Listing assets folder:"
+          echo "📁 Listing src/assets:"
           ls -l projects/telegrammsg/src/assets
           echo "🔍 Showing env.js content:"
           cat projects/telegrammsg/src/assets/env.js || echo "❌ env.js not found"
@@ -47,9 +47,17 @@ jobs:
       - name: Build Telegrammsg Angular App
         run: npx ng build telegrammsg --configuration production
 
-      # 7️⃣ Optional: Deploy to GitHub Pages
-      # - name: Deploy to GitHub Pages
-      #   uses: peaceiris/actions-gh-pages@v3
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: ./dist/telegrammsg
+      # 7️⃣ Verify env.js exists in dist
+      - name: Verify env.js in dist
+        run: |
+          echo "📁 Listing dist/telegrammsg/assets:"
+          ls -l dist/telegrammsg/assets
+          echo "🔍 env.js content in dist:"
+          cat dist/telegrammsg/assets/env.js || echo "❌ env.js not found in dist"
+
+      # 8️⃣ Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist/telegrammsg
