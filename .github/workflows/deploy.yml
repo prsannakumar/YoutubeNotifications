@@ -1,11 +1,11 @@
-name: Create env.js
+name: Build & Deploy Telegrammsg Angular App
 
 on:
   push:
     branches: [main]
 
 jobs:
-  create-env:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -13,21 +13,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Create env.js with hardcoded Firebase config
-      - name: Create env.js
-        run: |
-          mkdir -p projects/telegrammsg/src/assets
-          echo "window.env = {" > projects/telegrammsg/src/assets/env.js
-          echo "  firebase: {" >> projects/telegrammsg/src/assets/env.js
-          echo "    apiKey: 'hardcoded_api_key'," >> projects/telegrammsg/src/assets/env.js
-          echo "    authDomain: 'hardcoded_project.firebaseapp.com'," >> projects/telegrammsg/src/assets/env.js
-          echo "    projectId: 'hardcoded_project'," >> projects/telegrammsg/src/assets/env.js
-          echo "    storageBucket: 'hardcoded_project.appspot.com'," >> projects/telegrammsg/src/assets/env.js
-          echo "    messagingSenderId: 'hardcoded_sender_id'," >> projects/telegrammsg/src/assets/env.js
-          echo "    appId: 'hardcoded_app_id'" >> projects/telegrammsg/src/assets/env.js
-          echo "  }" >> projects/telegrammsg/src/assets/env.js
-          echo "};" >> projects/telegrammsg/src/assets/env.js
+      # 2️⃣ Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
 
-      # 3️⃣ Debug: show the env.js content
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 4️⃣ Create env.js using Node.js script
+      - name: Create env.js
+        run: node scripts/create-env.js
+
+      # 5️⃣ Verify env.js was created
       - name: Verify env.js
         run: cat projects/telegrammsg/src/assets/env.js || echo "❌ env.js not found"
+
+      # 6️⃣ Build telegrammsg project
+      - name: Build Telegrammsg Angular App
+        run: npx ng build telegrammsg --configuration production
+
+      # 7️⃣ Optional: Deploy
+      # - name: Deploy to GitHub Pages
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: ./dist/telegrammsg
