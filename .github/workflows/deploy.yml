@@ -22,7 +22,6 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-
       - name: Inject Firebase secrets
         run: |
           echo "window['NG_APP_FIREBASE_API_KEY'] = '${{ secrets.NG_APP_FIREBASE_API_KEY }}';
@@ -35,7 +34,8 @@ jobs:
           window['NG_APP_FIREBASE_VAPID_KEY'] = '${{ secrets.NG_APP_FIREBASE_VAPID_KEY }}';" > ./projects/telegrammsg/src/assets/env.js
 
       - name: Build Angular app
-        run: npm run build -- --project telegrammsg --configuration production
+        run: |
+          npm run build -- --project telegrammsg --configuration production --base-href /YoutubeNotifications/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
