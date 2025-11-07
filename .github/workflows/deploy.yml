@@ -3,43 +3,50 @@ name: Deploy Telegrammsg to GitHub Pages
 on:
   push:
     branches:
-      - main  # your default branch
+      - main  # change if your main branch has a different name
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      # 1️⃣ Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+      # 2️⃣ Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
 
-    - name: Install dependencies
-      run: npm install
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
+        run: npm install
 
-    - name: Create env.js from GitHub Secrets
-      run: |
-        echo "window.env = {" > projects/telegrammsg/src/assets/env.js
-        echo "  apiKey: '${{ secrets.NG_APP_FIREBASE_API_KEY }}'," >> projects/telegrammsg/src/assets/env.js
-        echo "  authDomain: '${{ secrets.NG_APP_FIREBASE_AUTH_DOMAIN }}'," >> projects/telegrammsg/src/assets/env.js
-        echo "  projectId: '${{ secrets.NG_APP_FIREBASE_PROJECT_ID }}'," >> projects/telegrammsg/src/assets/env.js
-        echo "  storageBucket: '${{ secrets.NG_APP_FIREBASE_STORAGE_BUCKET }}'," >> projects/telegrammsg/src/assets/env.js
-        echo "  messagingSenderId: '${{ secrets.NG_APP_FIREBASE_SENDER_ID }}'," >> projects/telegrammsg/src/assets/env.js
-        echo "  appId: '${{ secrets.NG_APP_FIREBASE_APP_ID }}'," >> projects/telegrammsg/src/assets/env.js
-        echo "  measurementId: '${{ secrets.NG_APP_FIREBASE_MEASUREMENT_ID }}'," >> projects/telegrammsg/src/assets/env.js
-        echo "  vapidKey: '${{ secrets.NG_APP_FIREBASE_VAPID_KEY }}'" >> projects/telegrammsg/src/assets/env.js
-        echo "};" >> projects/telegrammsg/src/assets/env.js
+      # 4️⃣ Create env.js from GitHub secrets
+      - name: Create env.js
+        run: |
+          mkdir -p src/assets
+          echo "window.env = {" > src/assets/env.js
+          echo "  apiKey: '${{ secrets.NG_APP_FIREBASE_API_KEY }}'," >> src/assets/env.js
+          echo "  authDomain: '${{ secrets.NG_APP_FIREBASE_AUTH_DOMAIN }}'," >> src/assets/env.js
+          echo "  projectId: '${{ secrets.NG_APP_FIREBASE_PROJECT_ID }}'," >> src/assets/env.js
+          echo "  storageBucket: '${{ secrets.NG_APP_FIREBASE_STORAGE_BUCKET }}'," >> src/assets/env.js
+          echo "  messagingSenderId: '${{ secrets.NG_APP_FIREBASE_SENDER_ID }}'," >> src/assets/env.js
+          echo "  appId: '${{ secrets.NG_APP_FIREBASE_APP_ID }}'," >> src/assets/env.js
+          echo "  measurementId: '${{ secrets.NG_APP_FIREBASE_MEASUREMENT_ID }}'," >> src/assets/env.js
+          echo "  vapidKey: '${{ secrets.NG_APP_FIREBASE_VAPID_KEY }}'" >> src/assets/env.js
+          echo "};" >> src/assets/env.js
 
-    - name: Build Telegrammsg
-      run: npx ng build telegrammsg --configuration production --base-href /YoutubeNotifications/
+      # 5️⃣ Build Angular project
+      - name: Build Angular project
+        run: npm run build -- --configuration production --project telegrammsg --base-href /YoutubeNotifications/
 
-    - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v5
-      with:
-        branch: gh-pages
-        folder: projects/YoutubeNotificationsNew/dist/telegrammsg
-        clean: true
+      # 6️⃣ Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v5.0.0
+        with:
+          branch: gh-pages          # branch to deploy to
+          folder: dist/telegrammsg  # folder to deploy
+          clean: true
