@@ -1,17 +1,17 @@
-name: Deploy Angular Multi-Project to GitHub Pages
+name: Build & Deploy telegrammsg to GitHub Pages
 
 on:
   push:
     branches:
-      - main  # Trigger on main branch
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout the repository
-      - name: Checkout repo
+      # 1️⃣ Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       # 2️⃣ Setup Node.js
@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 4️⃣ Inject Firebase environment variables into .env
+      # 4️⃣ Inject Firebase secrets into .env
       - name: Inject Firebase secrets
         run: |
           echo "NG_APP_FIREBASE_API_KEY=${{ secrets.NG_APP_FIREBASE_API_KEY }}" >> .env
@@ -36,7 +36,7 @@ jobs:
           echo "NG_APP_FIREBASE_MEASUREMENT_ID=${{ secrets.NG_APP_FIREBASE_MEASUREMENT_ID }}" >> .env
           echo "NG_APP_FIREBASE_VAPID_KEY=${{ secrets.NG_APP_FIREBASE_VAPID_KEY }}" >> .env
 
-      # 5️⃣ Build the Angular project (telegrammsg) with correct base href
+      # 5️⃣ Build the Angular project telegrammsg
       - name: Build Angular project
         run: npx ng build telegrammsg --configuration production --base-href /YoutubeNotifications/
 
