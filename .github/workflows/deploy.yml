@@ -38,7 +38,7 @@ jobs:
 
       # 5️⃣ Build Angular project (production)
       - name: Build Angular project
-        run: npm run build -- --prod
+        run: ng build telegrammsg --configuration production
 
       # 6️⃣ Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
