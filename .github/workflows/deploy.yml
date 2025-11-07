@@ -1,50 +1,43 @@
-name: Build and Deploy Angular App
-permissions:
-  contents: write
+name: Build & Deploy Angular App
 
 on:
   push:
-    branches:
-      - main  # change to master if your default branch is master
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 16
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm install
 
-      - name: Inject Firebase secrets
+      - name: Create Firebase env.js from secrets
         run: |
-          echo "Creating assets folder if it doesn't exist..."
-          mkdir -p ./projects/telegrammsg/src/assets
-          echo "Writing env.js with Firebase config..."
-          echo "window.env = { firebaseConfig: { \
-            apiKey: '${{ secrets.NG_APP_FIREBASE_API_KEY }}', \
-            authDomain: '${{ secrets.NG_APP_FIREBASE_AUTH_DOMAIN }}', \
-            projectId: '${{ secrets.NG_APP_FIREBASE_PROJECT_ID }}', \
-            storageBucket: '${{ secrets.NG_APP_FIREBASE_STORAGE_BUCKET }}', \
-            messagingSenderId: '${{ secrets.NG_APP_FIREBASE_SENDER_ID }}', \
-            appId: '${{ secrets.NG_APP_FIREBASE_APP_ID }}', \
-            measurementId: '${{ secrets.NG_APP_FIREBASE_MEASUREMENT_ID }}', \
-            vapidKey: '${{ secrets.NG_APP_FIREBASE_VAPID_KEY }}' \
-          } };" > ./projects/telegrammsg/src/assets/env.js
-          echo "✅ env.js created at ./projects/telegrammsg/src/assets/env.js"
+          mkdir -p src/assets
+          echo "window.env = {
+            firebase: {
+              apiKey: '${{ secrets.FIREBASE_API_KEY }}',
+              authDomain: '${{ secrets.FIREBASE_PROJECT_ID }}.firebaseapp.com',
+              projectId: '${{ secrets.FIREBASE_PROJECT_ID }}',
+              storageBucket: '${{ secrets.FIREBASE_PROJECT_ID }}.appspot.com',
+              messagingSenderId: '${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}',
+              appId: '${{ secrets.FIREBASE_APP_ID }}'
+            }
+          };" > src/assets/env.js
 
-      - name: Build Angular app
-        run: npx ng build telegrammsg --configuration production --base-href /YoutubeNotifications/
+      - name: Build Angular App
+        run: npm run build --prod
 
+      # Example deploy step (GitHub Pages)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/telegrammsg
+          publish_dir: ./dist/YoutubeNotifications
