@@ -1,16 +1,16 @@
-// firebase-messaging-sw.js
+// src/firebase-messaging-sw.js
 
 importScripts('https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js');
 
 firebase.initializeApp({
-  apiKey: "AIzaSyAyW3X3v0EwjlprJqe2NLTEi-i5ZWO79kU",
-  authDomain: "prasanna-notify-bot.firebaseapp.com",
-  projectId: "prasanna-notify-bot",
-  storageBucket: "prasanna-notify-bot.firebasestorage.app",
-  messagingSenderId: "1017019533161",
-  appId: "1:1017019533161:web:bab151b7bd2ae118151ff8",
-  measurementId: "G-4436P5QY4R"
+  apiKey: "YOUR_FIREBASE_API_KEY",
+  authDomain: "YOUR_FIREBASE_AUTH_DOMAIN",
+  projectId: "YOUR_FIREBASE_PROJECT_ID",
+  storageBucket: "YOUR_FIREBASE_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_FIREBASE_SENDER_ID",
+  appId: "YOUR_FIREBASE_APP_ID",
+  measurementId: "YOUR_FIREBASE_MEASUREMENT_ID"
 });
 
 const messaging = firebase.messaging();
