@@ -9,47 +9,50 @@ import { environment } from '../../environment';
   styleUrls: ['./send-telegram.component.css']
 })
 export class SendTelegramComponent {
+  notificationPermission: NotificationPermission = 'default';
 
   async requestPermission() {
-    const permission = await Notification.requestPermission();
-    console.log('Notification permission:', permission);
+    this.notificationPermission = await Notification.requestPermission();
+    console.log('Notification permission:', this.notificationPermission);
 
-    if (permission === 'granted') {
-      const registration = await navigator.serviceWorker.ready;
-
-      let app;
-      if (getApps().length === 0) {
-        app = initializeApp(environment.firebase);
-        console.log('✅ Firebase app initialized');
-      } else {
-        app = getApp();
-      }
-
-      const messaging = getMessaging(app);
-
+    if (this.notificationPermission === 'granted') {
       try {
+        const registration = await navigator.serviceWorker.ready;
+
+        let app;
+        if (getApps().length === 0) {
+          app = initializeApp(environment.firebase);
+          console.log('✅ Firebase app initialized');
+        } else {
+          app = getApp();
+        }
+
+        const messaging = getMessaging(app);
+
         const token = await getToken(messaging, {
           vapidKey: environment.firebase.vapidKey,
           serviceWorkerRegistration: registration,
         });
+
         console.log('✅ FCM Token:', token);
 
-        // --- Send token to Cloudflare Worker ---
-        const workerUrl = "https://telegram-worker.pprasannakumar264.workers.dev"; // your actual worker URL
+        // Send token to your Worker
+        const workerUrl = "https://telegram-worker.pprasannakumar264.workers.dev";
         await fetch(workerUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ fcmToken: token })
         });
+
         console.log("📤 FCM token sent to Worker!");
-        alert("you are registered successfully");
+        // update DOM status
+        this.notificationPermission = 'granted';
 
       } catch (err) {
         console.error('❌ Error getting token or sending to Worker:', err);
-        alert("you are not registered");
+        this.notificationPermission = 'default'; // or show error message
       }
-    } else {
-      console.log('🚫 Permission not granted for Notification');
-    }
+    } 
+    // If permission is denied, Angular template will show warning automatically
   }
 }
