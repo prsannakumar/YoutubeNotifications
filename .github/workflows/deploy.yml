@@ -3,50 +3,46 @@ name: Deploy Angular to GitHub Pages
 on:
   push:
     branches:
-      - main  # change if your default branch is different
+      - main   # Trigger workflow on push to main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repo
-      - name: Checkout repository
+      # 1️⃣ Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: '18'
 
       # 3️⃣ Install dependencies
       - name: Install dependencies
         run: npm ci
 
-      # 4️⃣ Create env.js from secrets
-      - name: Create env.js from template
+      # 4️⃣ Inject Firebase secrets into .env for Angular build
+      - name: Inject Firebase environment variables
         run: |
-          mkdir -p projects/telegrammsg/src/assets
-          cp projects/telegrammsg/src/assets/env.template.js projects/telegrammsg/src/assets/env.js
-          sed -i "s|__NG_APP_FIREBASE_API_KEY__|${{ secrets.NG_APP_FIREBASE_API_KEY }}|g" projects/telegrammsg/src/assets/env.js
-          sed -i "s|__NG_APP_FIREBASE_AUTH_DOMAIN__|${{ secrets.NG_APP_FIREBASE_AUTH_DOMAIN }}|g" projects/telegrammsg/src/assets/env.js
-          sed -i "s|__NG_APP_FIREBASE_PROJECT_ID__|${{ secrets.NG_APP_FIREBASE_PROJECT_ID }}|g" projects/telegrammsg/src/assets/env.js
-          sed -i "s|__NG_APP_FIREBASE_STORAGE_BUCKET__|${{ secrets.NG_APP_FIREBASE_STORAGE_BUCKET }}|g" projects/telegrammsg/src/assets/env.js
-          sed -i "s|__NG_APP_FIREBASE_SENDER_ID__|${{ secrets.NG_APP_FIREBASE_SENDER_ID }}|g" projects/telegrammsg/src/assets/env.js
-          sed -i "s|__NG_APP_FIREBASE_APP_ID__|${{ secrets.NG_APP_FIREBASE_APP_ID }}|g" projects/telegrammsg/src/assets/env.js
-          sed -i "s|__NG_APP_FIREBASE_MEASUREMENT_ID__|${{ secrets.NG_APP_FIREBASE_MEASUREMENT_ID }}|g" projects/telegrammsg/src/assets/env.js
-          sed -i "s|__NG_APP_FIREBASE_VAPID_KEY__|${{ secrets.NG_APP_FIREBASE_VAPID_KEY }}|g" projects/telegrammsg/src/assets/env.js
+          echo "NG_APP_FIREBASE_API_KEY=${{ secrets.NG_APP_FIREBASE_API_KEY }}" >> .env
+          echo "NG_APP_FIREBASE_AUTH_DOMAIN=${{ secrets.NG_APP_FIREBASE_AUTH_DOMAIN }}" >> .env
+          echo "NG_APP_FIREBASE_PROJECT_ID=${{ secrets.NG_APP_FIREBASE_PROJECT_ID }}" >> .env
+          echo "NG_APP_FIREBASE_STORAGE_BUCKET=${{ secrets.NG_APP_FIREBASE_STORAGE_BUCKET }}" >> .env
+          echo "NG_APP_FIREBASE_SENDER_ID=${{ secrets.NG_APP_FIREBASE_SENDER_ID }}" >> .env
+          echo "NG_APP_FIREBASE_APP_ID=${{ secrets.NG_APP_FIREBASE_APP_ID }}" >> .env
+          echo "NG_APP_FIREBASE_MEASUREMENT_ID=${{ secrets.NG_APP_FIREBASE_MEASUREMENT_ID }}" >> .env
+          echo "NG_APP_FIREBASE_VAPID_KEY=${{ secrets.NG_APP_FIREBASE_VAPID_KEY }}" >> .env
 
-      # 5️⃣ Build Angular
+      # 5️⃣ Build Angular project (production)
       - name: Build Angular project
-        run: npx ng build telegrammsg --configuration production --output-path=projects/telegrammsg/dist/telegrammsg --base-href /YoutubeNotifications/
+        run: npm run build -- --prod
 
       # 6️⃣ Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          branch: gh-pages
-          folder: projects/telegrammsg/dist/telegrammsg
-          clean: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist   # Replace with actual Angular dist folder if different
