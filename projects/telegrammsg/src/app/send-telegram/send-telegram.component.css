@@ -47,3 +47,82 @@
   background-color: #ff4c4c;
   transform: scale(1.05);
 }
+/* General styling for all alerts */
+.alert {
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover effect for alert */
+.alert:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Warning alert */
+.alert-warning {
+  background-color: #fff3cd;
+  border-left: 6px solid #ffc107;
+  color: #856404;
+}
+
+/* Info alert */
+.alert-info {
+  background-color: #d1ecf1;
+  border-left: 6px solid #17a2b8;
+  color: #0c5460;
+}
+
+/* Success alert */
+.alert-success {
+  background-color: #d4edda;
+  border-left: 6px solid #28a745;
+  color: #155724;
+}
+
+/* Alert headers */
+.alert h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1.4rem;
+}
+
+/* Alert paragraph */
+.alert p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Subscribe button styling */
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .alert {
+    padding: 15px;
+    font-size: 0.9rem;
+  }
+
+  button {
+    width: 100%;
+    font-size: 0.95rem;
+  }
+}
