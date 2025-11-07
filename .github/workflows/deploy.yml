@@ -1,6 +1,7 @@
 name: Build and Deploy Angular App
 permissions:
   contents: write
+
 on:
   push:
     branches:
@@ -35,7 +36,7 @@ jobs:
 
       - name: Build Angular app
         run: |
-          npm run build -- --project telegrammsg --configuration production --base-href /YoutubeNotifications/
+          npx ng build telegrammsg --configuration production --base-href /YoutubeNotifications/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
