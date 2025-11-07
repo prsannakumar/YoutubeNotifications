@@ -18,30 +18,24 @@ jobs:
         with:
           node-version: 16
 
-      # 3️⃣ Install dependencies (including @angular/cli locally)
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Create Firebase env.js safely
+      # 4️⃣ Create Firebase env.js using Node.js script
       - name: Create Firebase env.js
-        run: |
-          mkdir -p projects/telegrammsg/src/assets
-          echo "window.env = {" > projects/telegrammsg/src/assets/env.js
-          echo "  firebase: {" >> projects/telegrammsg/src/assets/env.js
-          echo "    apiKey: '${{ secrets.FIREBASE_API_KEY }}'," >> projects/telegrammsg/src/assets/env.js
-          echo "    authDomain: '${{ secrets.FIREBASE_PROJECT_ID }}.firebaseapp.com'," >> projects/telegrammsg/src/assets/env.js
-          echo "    projectId: '${{ secrets.FIREBASE_PROJECT_ID }}'," >> projects/telegrammsg/src/assets/env.js
-          echo "    storageBucket: '${{ secrets.FIREBASE_PROJECT_ID }}.appspot.com'," >> projects/telegrammsg/src/assets/env.js
-          echo "    messagingSenderId: '${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}'," >> projects/telegrammsg/src/assets/env.js
-          echo "    appId: '${{ secrets.FIREBASE_APP_ID }}'" >> projects/telegrammsg/src/assets/env.js
-          echo "  }" >> projects/telegrammsg/src/assets/env.js
-          echo "};" >> projects/telegrammsg/src/assets/env.js
+        run: node scripts/create-env.js
+        env:
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
 
-      # 5️⃣ Verify that env.js was created
+      # 5️⃣ Verify env.js was created
       - name: Verify env.js
         run: cat projects/telegrammsg/src/assets/env.js
 
-      # 6️⃣ Build only the telegrammsg project using npx
+      # 6️⃣ Build telegrammsg project
       - name: Build Telegrammsg Angular App
         run: npx ng build telegrammsg --configuration production
 
