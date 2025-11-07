@@ -1,24 +1,24 @@
 const fs = require('fs');
 const path = require('path');
 
-// Target path for env.js
+// Path to env.js
 const envPath = path.join(__dirname, '../projects/telegrammsg/src/assets/env.js');
 
-// Ensure the directory exists
+// Ensure the folder exists
 fs.mkdirSync(path.dirname(envPath), { recursive: true });
 
-// Generate env.js content
+// Hardcoded Firebase config (replace with your actual values for now)
 const content = `window.env = {
   firebase: {
-    apiKey: '${process.env.FIREBASE_API_KEY}',
-    authDomain: '${process.env.FIREBASE_PROJECT_ID}.firebaseapp.com',
-    projectId: '${process.env.FIREBASE_PROJECT_ID}',
-    storageBucket: '${process.env.FIREBASE_PROJECT_ID}.appspot.com',
-    messagingSenderId: '${process.env.FIREBASE_MESSAGING_SENDER_ID}',
-    appId: '${process.env.FIREBASE_APP_ID}'
+    apiKey: "hardcoded_api_key",
+    authDomain: "hardcoded_project.firebaseapp.com",
+    projectId: "hardcoded_project",
+    storageBucket: "hardcoded_project.appspot.com",
+    messagingSenderId: "hardcoded_sender_id",
+    appId: "hardcoded_app_id"
   }
 };`;
 
-// Write file
+// Write env.js
 fs.writeFileSync(envPath, content, 'utf8');
 console.log('✅ env.js created at', envPath);
