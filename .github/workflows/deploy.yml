@@ -5,35 +5,32 @@ permissions:
 on:
   push:
     branches:
-      - main  # change to master if your default branch is master
+      - main  # or 'master' if your default branch is master
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repo
+      # 1️⃣ Checkout repo
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Setup Node.js
+      # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # Step 3: Install dependencies
+      # 3️⃣ Install dependencies with legacy peer deps
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      # Step 4: Inject Firebase secrets into env.js
+      # 4️⃣ Create assets folder & inject Firebase secrets
       - name: Inject Firebase secrets
         run: |
-          # Ensure the assets folder exists
           mkdir -p ./projects/telegrammsg/src/assets
-          
-          # Create env.js with secrets
-          printf "window.env = {
+          echo "window.env = {
             firebaseConfig: {
               apiKey: '${{ secrets.NG_APP_FIREBASE_API_KEY }}',
               authDomain: '${{ secrets.NG_APP_FIREBASE_AUTH_DOMAIN }}',
@@ -44,14 +41,13 @@ jobs:
               measurementId: '${{ secrets.NG_APP_FIREBASE_MEASUREMENT_ID }}',
               vapidKey: '${{ secrets.NG_APP_FIREBASE_VAPID_KEY }}'
             }
-          };" > ./projects/telegrammsg/src/assets/env.js
+          }" > ./projects/telegrammsg/src/assets/env.js
 
-      # Step 5: Build Angular app
+      # 5️⃣ Build Angular app with npx and base href
       - name: Build Angular app
-        run: |
-          npx ng build telegrammsg --configuration production --base-href /YoutubeNotifications/
+        run: npx ng build telegrammsg --configuration production --base-href /YoutubeNotifications/
 
-      # Step 6: Deploy to GitHub Pages
+      # 6️⃣ Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
