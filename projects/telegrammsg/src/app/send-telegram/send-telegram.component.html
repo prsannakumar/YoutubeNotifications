@@ -1,10 +1,20 @@
-
-<div class="container">
-  <div class="card">
-    <h1>🔔 Subscribe for Notifications</h1>
-    <p>Click the button below to receive instant updates!</p>
-    <button (click)="requestPermission()">Subscribe Now</button>
-  </div>
+<div *ngIf="notificationPermission === 'denied'" class="alert alert-warning">
+  <h2>Notifications blocked</h2>
+  <p>
+    It seems like you've blocked notifications for this site. To receive updates, please enable notifications in your browser settings.
+  </p>
+</div>
+<div *ngIf="notificationPermission === 'default'" class="alert alert-info">
+  <h2>Notification not enabled</h2>
+  <p>
+    You haven't granted permission for notifications yet. Please click the "Subscribe Now" button above to enable notifications.
+   </p>
+</div>
+<div *ngIf="notificationPermission === 'granted'" class="alert alert-success">
+  <h2>Notifications Enabled!</h2>
+  <p>
+    Thank you for subscribing! You will now receive instant notifications.
+  </p>
 </div>
 
-
+<button (click)="requestPermission()">Subscribe Now</button>
