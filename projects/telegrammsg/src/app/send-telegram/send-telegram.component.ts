@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { getMessaging, getToken } from 'firebase/messaging';
 import { getApp, getApps, initializeApp } from 'firebase/app';
-import { environment } from '../../environment';
+import { environment } from '../../environments/environment';
+
 
 @Component({
   selector: 'app-send-telegram',
