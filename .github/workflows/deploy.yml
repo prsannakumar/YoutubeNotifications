@@ -1,10 +1,9 @@
-# .github/workflows/deploy.yml
-name: Deploy GitHub Pages
+name: Deploy Angular to GitHub Pages
 
 on:
   push:
     branches:
-      - main  # or the branch you deploy from
+      - main  # or your deployment branch
 
 jobs:
   build-and-deploy:
@@ -17,22 +16,25 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 18
+        node-version: '16'   # match your local Node version
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci
 
     - name: Build Angular project
-      run: npm run build -- --project telegrammsg --configuration production
-
+      run: ng build --project telegrammsg --configuration production
 
     - name: Copy env.js
       run: |
-        mkdir -p dist/YoutubeNotifications/assets
-        cp src/assets/env.js dist/YoutubeNotifications/assets/
+        mkdir -p dist/telegrammsg/assets
+        if [ -f projects/telegrammsg/src/assets/env.js ]; then
+          cp projects/telegrammsg/src/assets/env.js dist/telegrammsg/assets/
+        else
+          echo "⚠️ env.js not found!"
+        fi
 
     - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v4
+      uses: peaceiris/actions-gh-pages@v6
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist/YoutubeNotifications
+        publish_dir: ./dist/telegrammsg
