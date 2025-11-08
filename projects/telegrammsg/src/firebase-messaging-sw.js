@@ -1,3 +1,5 @@
+// firebase-messaging-sw.js
+
 importScripts('https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js');
 
@@ -17,21 +19,26 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
   console.log('📩 Received background message', payload);
 
+  const notificationTitle = payload.notification?.title || "Notification";
   const notificationOptions = {
-    body: payload.notification?.body || '',
-    icon: payload.notification?.icon,
-    image: payload.notification?.image,
-    data: { url: payload.data?.url }  // attach dynamic URL
+    body: payload.notification?.body || "Click to open link",
+    icon: payload.notification?.icon || "/assets/icon.png", // optional icon
+    image: payload.notification?.image || null,            // optional image
+    data: {
+      // 🔹 MANUALLY SET THE URL HERE
+      url: "https://youtu.be/cYhsg7e-oRE"  
+    }
   };
 
-  self.registration.showNotification(payload.notification?.title, notificationOptions);
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
 // Handle notification click
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
+
   const url = event.notification.data?.url;
   if (url) {
-    event.waitUntil(clients.openWindow(url));  // opens dynamic URL
+    event.waitUntil(clients.openWindow(url)); // open the manual URL
   }
 });
