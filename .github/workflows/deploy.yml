@@ -1,48 +1,37 @@
-name: Build & Deploy telegrammsg to GitHub Pages
+# .github/workflows/deploy.yml
+name: Deploy GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main  # or the branch you deploy from
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      # 2️⃣ Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
 
-      # 3️⃣ Install dependencies
-      - name: Install dependencies
-        run: npm ci
+    - name: Install dependencies
+      run: npm install
 
-      # 4️⃣ Inject Firebase secrets into .env
-      - name: Inject Firebase secrets
-        run: |
-          echo "NG_APP_FIREBASE_API_KEY=${{ secrets.NG_APP_FIREBASE_API_KEY }}" >> .env
-          echo "NG_APP_FIREBASE_AUTH_DOMAIN=${{ secrets.NG_APP_FIREBASE_AUTH_DOMAIN }}" >> .env
-          echo "NG_APP_FIREBASE_PROJECT_ID=${{ secrets.NG_APP_FIREBASE_PROJECT_ID }}" >> .env
-          echo "NG_APP_FIREBASE_STORAGE_BUCKET=${{ secrets.NG_APP_FIREBASE_STORAGE_BUCKET }}" >> .env
-          echo "NG_APP_FIREBASE_SENDER_ID=${{ secrets.NG_APP_FIREBASE_SENDER_ID }}" >> .env
-          echo "NG_APP_FIREBASE_APP_ID=${{ secrets.NG_APP_FIREBASE_APP_ID }}" >> .env
-          echo "NG_APP_FIREBASE_MEASUREMENT_ID=${{ secrets.NG_APP_FIREBASE_MEASUREMENT_ID }}" >> .env
-          echo "NG_APP_FIREBASE_VAPID_KEY=${{ secrets.NG_APP_FIREBASE_VAPID_KEY }}" >> .env
+    - name: Build Angular project
+      run: npm run build --prod
 
-      # 5️⃣ Build the Angular project telegrammsg
-      - name: Build Angular project
-        run: npx ng build telegrammsg --configuration production --base-href /YoutubeNotifications/
+    - name: Copy env.js
+      run: |
+        mkdir -p dist/YoutubeNotifications/assets
+        cp src/assets/env.js dist/YoutubeNotifications/assets/
 
-      # 6️⃣ Deploy to GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/telegrammsg
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist/YoutubeNotifications
