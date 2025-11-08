@@ -1,9 +1,6 @@
-// firebase-messaging-sw.js
-
 importScripts('https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js');
 
-// Initialize Firebase
 firebase.initializeApp({
   apiKey: "YOUR_FIREBASE_API_KEY",
   authDomain: "YOUR_FIREBASE_AUTH_DOMAIN",
@@ -15,30 +12,26 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// Handle background messages
+// Handle background messages (data-only)
 messaging.onBackgroundMessage((payload) => {
-  console.log('📩 Received background message', payload);
+  console.log('Received background message', payload);
 
-  const notificationTitle = payload.notification?.title || "Notification";
+  // Read all fields from data
+  const notificationTitle = payload.data.title || "Notification";
   const notificationOptions = {
-    body: payload.notification?.body || "Click to open link",
-    icon: payload.notification?.icon || "/assets/icon.png", // optional icon
-    image: payload.notification?.image || null,            // optional image
-    data: {
-      // 🔹 MANUALLY SET THE URL HERE
-      url: "https://youtu.be/cYhsg7e-oRE"  
-    }
+    body: payload.data.body || "Click to open link",
+    icon: payload.data.icon || "/assets/icon.png",
+    image: payload.data.image || null,
+    data: { url: payload.data.url }  // dynamic URL
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-// Handle notification click
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
-
   const url = event.notification.data?.url;
   if (url) {
-    event.waitUntil(clients.openWindow(url)); // open the manual URL
+    event.waitUntil(clients.openWindow(url));
   }
 });
