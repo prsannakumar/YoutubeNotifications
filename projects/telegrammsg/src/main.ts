@@ -28,7 +28,7 @@ const app = initializeApp(firebaseConfig);
 
 // 4️⃣ Register service worker if supported
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/YoutubeNotifications/firebase-messaging-sw.js')
+  navigator.serviceWorker.register('./firebase-messaging-sw.js')
     .then((registration) => {
       console.log('✅ Service Worker registered:', registration.scope);
     })
