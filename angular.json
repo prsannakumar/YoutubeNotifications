@@ -104,7 +104,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/telegrammsg",
+            "outputPath": "docs",
             "index": "projects/telegrammsg/src/index.html",
             "main": "projects/telegrammsg/src/main.ts",
             "polyfills": [
