@@ -30,7 +30,7 @@ const app = initializeApp(firebaseConfig);
 if ('serviceWorker' in navigator) {
 
 
-  navigator.serviceWorker.register('/YoutubeNotifications/telegrammsg/firebase-messaging-sw.js')
+  navigator.serviceWorker.register('./firebase-messaging-sw.js')
 
     .then((registration) => {
       console.log('✅ Service Worker registered:', registration.scope);
